@@ -52,5 +52,5 @@ describe "Static pages" do
     expect(page).to # fill in
     click_link "sample app"
     expect(page).to # fill in
+  end
 end
-
