@@ -44,16 +44,6 @@ require 'spec_helper'
     end
   end
   
-  describe "email address with mixed case" do
-    let(:mixed_case_email) { "Foo@ExAMPle.CoM" }
-
-    it "should be saved as all lower-case" do
-      @user.email = mixed_case_email
-      @user.save
-      expect(@user.reload.email).to eq mixed_case_email.downcase
-    end
-  end
-
   describe "when email format is valid" do
     it "should be valid" do
       addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
@@ -67,10 +57,9 @@ require 'spec_helper'
   describe "when email address is already taken" do
     before do
       user_with_same_email = @user.dup
-       user_with_same_email.email = @user.email.upcase
+      user_with_same_email.email = @user.email.upcase
       user_with_same_email.save
     end
-
     it { should_not be_valid }
   end
   
@@ -80,6 +69,14 @@ require 'spec_helper'
                        password: " ", password_confirmation: " ")
     end
     it { should_not be_valid }
+  end
+
+   describe "return value of authenticate method" do
+    before { @user.save }
+    let(:found_user) { User.find_by(email: @user.email) }
+
+    describe "with valid password" do
+      it { should eq found_user.authenticate(@user.password) }
   end
 
   describe "when password doesn't match confirmation" do
@@ -97,14 +94,16 @@ require 'spec_helper'
 
       it { should_not eq user_for_invalid_password }
       specify { expect(user_for_invalid_password).to be_false }
+    end
   end
 
-  describe "return value of authenticate method" do
-    before { @user.save }
-    let(:found_user) { User.find_by(email: @user.email) }
+  describe "email address with mixed case" do
+    let(:mixed_case_email) { "Foo@ExAMPle.CoM" }
 
-    describe "with valid password" do
-      it { should eq found_user.authenticate(@user.password) }
+    it "should be saved as all lower-case" do
+      @user.email = mixed_case_email
+      @user.save
+      expect(@user.reload.email).to eq mixed_case_email.downcase
+    end
   end
- end
 end
