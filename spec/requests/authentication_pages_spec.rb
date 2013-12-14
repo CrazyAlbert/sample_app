@@ -84,7 +84,6 @@ describe "Authentication" do
       end
 
      describe "in the Microposts controller" do
->>>>>>> user-microposts
 
         describe "submitting to the create action" do
           before { post microposts_path }
