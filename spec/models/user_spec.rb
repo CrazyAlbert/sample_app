@@ -29,10 +29,10 @@ require 'spec_helper'
     it { should_not be_valid }
   end
   
-  describe "when email is not present" do
-    before { @user.email = " " }
-    it { should_not be_valid }
-  end
+  #describe "when email is not present" do
+   # before { @user.email = " " }
+    #it { should_not be_valid }
+  #end
 
   describe "when email format is invalid" do
     it "should be invalid" do
@@ -72,14 +72,6 @@ require 'spec_helper'
     it { should_not be_valid }
   end
 
-   describe "return value of authenticate method" do
-    before { @user.save }
-    let(:found_user) { User.find_by(email: @user.email) }
-
-    describe "with valid password" do
-      it { should eq found_user.authenticate(@user.password) }
-  end
-
   describe "when password doesn't match confirmation" do
     before { @user.password_confirmation = "mismatch" }
     it { should_not be_valid }
@@ -88,6 +80,14 @@ require 'spec_helper'
   describe "with a password that's too short" do
     before { @user.password = @user.password_confirmation = "a" * 5 }
     it { should be_invalid }
+  end
+
+  describe "return value of authenticate method" do
+    before { @user.save }
+    let(:found_user) { User.find_by(email: @user.email) }
+
+  describe "with valid password" do
+      it { should eq found_user.authenticate(@user.password) }
   end
 
   describe "with invalid password" do
