@@ -83,6 +83,9 @@ describe "Authentication" do
         end
       end
 
+<<<<<<< HEAD
+      describe "in the Microposts controller" do
+=======
      describe "in the Microposts controller" do
 >>>>>>> user-microposts
 

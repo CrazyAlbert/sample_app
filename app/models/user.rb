@@ -1,4 +1,9 @@
 class User < ActiveRecord::Base
+
+  #attr_accessible :name, :email, :password,
+   #                 :password_confirmation,:admin,:content
+  has_many :microposts, dependent: :destroy
+
   before_save { self.email = email.downcase }
   before_create :create_remember_token
   validates :name, presence: true, length: { maximum: 50 }
@@ -14,6 +19,11 @@ class User < ActiveRecord::Base
 
   def User.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
+  end
+
+  def feed
+    # This is preliminary. See "Following users" for the full implementation.
+    Micropost.where("user_id = ?", id)
   end
 
   private
