@@ -5,8 +5,10 @@ describe "User pages" do
   subject { page }
 
   describe "index" do
+
     let(:user) { FactoryGirl.create(:user) }
-    before(:each) do
+
+    before do
       sign_in user
       visit users_path
     end
@@ -57,7 +59,7 @@ describe "User pages" do
 
     before { visit user_path(user) }
 
-       it { should have_content(user.name) }
+    it { should have_content(user.name) }
     it { should have_title(user.name) }
 
     describe "microposts" do
@@ -66,6 +68,7 @@ describe "User pages" do
       it { should have_content(user.microposts.count) }
     end
   end
+
 
   describe "signup page" do
     before { visit signup_path }
@@ -97,39 +100,38 @@ describe "User pages" do
       it "should create a user" do
         expect { click_button submit }.to change(User, :count).by(1)
       end
-    
+
       describe "after saving the user" do
         before { click_button submit }
-        let(:user) { User.find_by(email: 'user@example.com') }
+        let(:user) { User.find_by_email('user@example.com') }
 
         it { should have_link('Sign out') }
         it { should have_title(user.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end
     end
-   end
+  end
 
-   describe "edit" do
-       let(:user) { FactoryGirl.create(:user) }
+  describe "edit" do
+    let(:user) { FactoryGirl.create(:user) }
     before do
       sign_in user
       visit edit_user_path(user)
-   end
+    end
 
-   describe "page" do
+    describe "page" do
       it { should have_content("Update your profile") }
       it { should have_title("Edit user") }
       it { should have_link('change', href: 'http://gravatar.com/emails') }
-   end
+    end
 
     describe "with invalid information" do
       before { click_button "Save changes" }
 
       it { should have_content('error') }
     end
-  
-    
-   describe "with valid information" do
+
+    describe "with valid information" do
       let(:new_name)  { "New Name" }
       let(:new_email) { "new@example.com" }
       before do
@@ -145,6 +147,19 @@ describe "User pages" do
       it { should have_link('Sign out', href: signout_path) }
       specify { expect(user.reload.name).to  eq new_name }
       specify { expect(user.reload.email).to eq new_email }
-    end 
+    end
+
+    describe "forbidden attributes" do
+      let(:params) do
+        { user: { admin: true, password: user.password,
+                  password_confirmation: user.password } }
+      end
+      before do
+        sign_in user, no_capybara: true
+        put user_path(user), params
+      end
+      specify { expect(user.reload).not_to be_admin }
+    end
   end
 end
+
