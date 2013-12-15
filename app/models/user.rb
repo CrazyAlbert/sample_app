@@ -1,7 +1,5 @@
 class User < ActiveRecord::Base
 
-  #attr_accessible :name, :email, :password,
-   #                 :password_confirmation,:admin,:content
   has_many :microposts, dependent: :destroy
 
   before_save { self.email = email.downcase }
